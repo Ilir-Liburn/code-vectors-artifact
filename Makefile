@@ -112,3 +112,16 @@ rq4-generate-data: lsee c2ocaml ## Generates data to run RQ4 <HIDE FROM HELP>.
 	docker build -t jjhenkel/code-vectors-artifact:rq4-gen -f ${ROOT_DIR}/reproduce/rq4/Dockerfile ${ROOT_DIR}/reproduce/rq4 
 	docker run -it --rm jjhenkel/code-vectors-artifact:rq4-gen &> ${ROOT_DIR}/reproduce/rq4/dataset.txt
 	@echo "[code-vectors] Finished!"
+
+rq0-generate-data: lsee c2ocaml ## Generates data to run RQ4 <HIDE FROM HELP>.
+	@echo "[code-vectors] Generating data for RQ0..."
+	@echo "[code-vectors] Transforming sources..."
+	pushd ${ROOT_DIR}/c2ocaml ; make rq0 ; popd
+	@echo "[code-vectors] Generating traces..."
+	pushd ${ROOT_DIR}/lsee ; make rq0 ; popd
+	mv ${ROOT_DIR}/lsee/rq0-good.traces.txt ${ROOT_DIR}/reproduce/rq0/good.traces.txt
+	mv ${ROOT_DIR}/lsee/rq0-bad.traces.txt ${ROOT_DIR}/reproduce/rq40bad.traces.txt
+	@echo "[code-vectors] Generating dataset..."
+	docker build -t jjhenkel/code-vectors-artifact:rq0-gen -f ${ROOT_DIR}/reproduce/rq0/Dockerfile ${ROOT_DIR}/reproduce/rq0 
+	docker run -it --rm jjhenkel/code-vectors-artifact:rq0-gen &> ${ROOT_DIR}/reproduce/rq0/dataset.txt
+	@echo "[code-vectors] Finished!"
